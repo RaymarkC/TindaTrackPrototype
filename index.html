@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TindaTrack Prototype</title>
+<style>
+*{box-sizing:border-box}
+:root{--ink:#26201d;--mute:#8a7b73}
+body.dark{--ink:#f2e8e2;--mute:#b3a29a;background:linear-gradient(135deg,#140b09 0%,#331813 55%,#5b2b20 100%);background-attachment:fixed}
+body.dark .phone{background:#1b1512;border-color:#2a2320;box-shadow:0 0 0 4px rgba(255,255,255,.12),0 26px 50px rgba(0,0,0,.6)}
+body.dark .card,body.dark .nav,body.dark .hb,body.dark .chip,body.dark .circ,body.dark input{background:#261e1a;color:var(--ink);box-shadow:none}
+body.dark input{border-color:#3d322c}
+body.dark .row{border-color:#3a2f29}
+body.dark .btn{background:#f2e8e2;color:#1b1512}
+body.dark .btn.alt,body.dark .step button,body.dark .av{background:#3a2f29;color:var(--ink)}
+body.dark .stat.b{background:#3a2f29}
+body.dark .chip.on{background:#f2e8e2;color:#1b1512}
+body.dark .pill{background:#1f3a2a;color:#8fd3a8}
+body.dark .pill.low{background:#4a221c;color:#ffb0a5}
+body.dark .nav button{color:#8f8078}
+body.dark .nav button.on{color:#ff8f7a}
+body.dark .nav button.on:after{background:#ff8f7a}
+body.dark .hb i{background:#f2e8e2}
+body.dark .tag{background:#ff8f7a;color:#1b1512}
+.mode{position:absolute;top:18px;right:18px;border:0;border-radius:99px;padding:8px 14px;background:rgba(255,255,255,.2);color:#fff;font-size:13px;font-weight:700;cursor:pointer}
+.head{position:relative}
+html,body{margin:0;font-family:Calibri,Arial,sans-serif;color:var(--ink)}
+body{min-height:100vh;background:linear-gradient(135deg,#7d2f25 0%,#b85042 55%,#e2916f 100%);background-attachment:fixed}
+.head{text-align:center;color:#fff;padding:28px 16px 4px}
+.head h1{margin:0;font-size:30px}
+.head p{margin:4px 0 0;opacity:.85;font-size:14px}
+.stage{display:flex;gap:44px;justify-content:center;align-items:flex-start;flex-wrap:wrap;padding:26px 16px 40px}
+.col{display:flex;flex-direction:column;align-items:center;gap:12px}
+.cap{color:#fff;font-size:14px;font-weight:700;background:rgba(255,255,255,.18);padding:5px 14px;border-radius:99px}
+.phone{width:300px;height:620px;background:#faf8f6;border:9px solid #fff;border-radius:46px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 0 0 4px rgba(255,255,255,.3),0 26px 50px rgba(0,0,0,.35)}
+.st{display:flex;justify-content:space-between;padding:12px 22px 0;font-size:11px;font-weight:700}
+.scr{flex:1;overflow-y:auto;padding:8px 16px 12px}
+.scr::-webkit-scrollbar{width:0}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0 14px}
+.hd h2{margin:0;font-size:19px}
+.hd p{margin:2px 0 0;font-size:13px;color:#7a6c65}
+.brandrow{display:flex;align-items:center;gap:6px}
+.brandrow h2{font-size:17px;white-space:nowrap}
+.tag{background:#b85042;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px}
+.av{width:36px;height:36px;border-radius:50%;background:#e7e8d1;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#b85042;flex:none}
+.circ{width:36px;height:36px;border-radius:50%;border:0;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.12);font-size:20px;cursor:pointer;flex:none}
+.hd.b{justify-content:flex-start}
+.card{background:#fff;border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:0 3px 14px rgba(60,40,30,.08)}
+.stats{display:flex;gap:10px;margin-bottom:12px}
+.stat{flex:1;border-radius:18px;padding:12px;color:#fff}
+.stat.a{background:#b85042}.stat.b{background:#26201d}
+.stat b{font-size:28px;display:block}.stat span{font-size:12px;opacity:.85}
+h3{margin:0 0 6px;font-size:15px}
+.row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #eee6df;cursor:pointer;font-size:14px}
+.row:last-child{border:0}
+.row small{color:var(--mute);display:block;font-size:12px}
+.pill{font-size:11px;padding:3px 9px;border-radius:99px;background:#e2f0e5;color:#2f6b45;font-weight:700}
+.pill.low{background:#f8d9d4;color:#a5271b}
+.btn{display:block;width:100%;padding:13px;border:0;border-radius:99px;background:#1c1c1c;color:#fff;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px}
+.btn.alt{background:#e7e8d1;color:#26201d}
+.btn.del{background:#fff;color:#c0392b;border:1.5px solid #c0392b}
+.btn.del.conf{background:#c0392b;color:#fff}
+body.dark .btn.del{background:transparent;color:#ff8a7a;border-color:#ff8a7a}
+body.dark .btn.del.conf{background:#c0392b;color:#fff;border-color:#c0392b}
+.btn.sm{display:inline-block;width:auto;padding:6px 12px;font-size:12px;margin:0}
+input{width:100%;padding:11px 14px;border:1px solid #e6dcd3;border-radius:99px;background:#fff;font-size:14px;margin-bottom:10px;color:#26201d}
+label{font-size:12px;color:var(--mute);display:block;margin:0 0 4px 6px}
+.chips{display:flex;gap:8px;margin-bottom:12px}
+.chip{padding:6px 14px;border-radius:99px;background:#fff;font-size:12px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.07)}
+.chip.on{background:#1c1c1c;color:#fff}
+.big{font-size:56px;font-weight:700;text-align:center;margin:4px 0}
+.step{display:flex;gap:14px;justify-content:center;align-items:center}
+.step button{width:48px;height:48px;border-radius:50%;border:0;background:#e7e8d1;font-size:24px;cursor:pointer}
+.empty{text-align:center;color:var(--mute);padding:18px 0;font-size:13px}
+.nav{display:flex;background:#fff;padding:8px 6px 4px;border-radius:24px 24px 0 0;box-shadow:0 -4px 14px rgba(0,0,0,.05)}
+.nav button{flex:1;border:0;background:none;color:#9a8b83;font-size:11px;cursor:pointer;position:relative;padding:4px 0 10px}
+.nav button b{display:block;font-size:19px;font-weight:400}
+.nav button.on{color:#b85042;font-weight:700}
+.nav button.on:after{content:"";position:absolute;bottom:2px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:#b85042}
+.hb{display:flex;justify-content:center;background:#fff;padding:2px 0 8px}
+.hb i{width:110px;height:4px;border-radius:3px;background:#26201d;opacity:.8}
+@media(max-width:740px){.head{position:fixed;top:0;right:0;z-index:9;padding:8px}.head h1,.head p{display:none}.mode{position:static;background:rgba(0,0,0,.45)}.stage{padding:0}body:not(.dark){background:#faf8f6}.phone{width:100vw;height:100vh;border:0;border-radius:0;box-shadow:none}.cap{display:none}}
+</style>
+</head>
+<body>
+<div class="head"><button class="mode" id="mode">\uD83C\uDF19 Dark mode</button><h1>TindaTrack</h1><p>Simple inventory tracker for small sari-sari stores &middot; tap the phone to explore</p></div>
+<div class="stage" id="stage"></div>
+<script>
+var items=[
+ {id:1,name:"Rice (1 kg)",qty:20,price:55},{id:2,name:"Canned Sardines",qty:4,price:25},
+ {id:3,name:"Instant Noodles",qty:12,price:14},{id:4,name:"Coffee Sachet",qty:3,price:8},
+ {id:5,name:"Softdrinks",qty:8,price:20},{id:6,name:"Eggs",qty:2,price:10}];
+var G={limit:5,notif:true,store:"Aling Marites Store"};
+var titles={home:"Home Dashboard",inventory:"Inventory",detail:"Item Details",add:"Add Item",alerts:"Low-Stock Alerts",settings:"Settings"};
+var tabs=[["home","\u2302","Home"],["inventory","\u2630","Inventory"],["alerts","\u26A0","Alerts"],["settings","\u2699","Settings"]];
+var phones=[];
+function low(i){return i.qty<=G.limit}
+function lows(){return items.filter(low)}
+function cur(st){return items.find(function(i){return i.id===st.sel})||items[0]}
+function row(i){return '<div class="row" data-go="detail" data-id="'+i.id+'"><div>'+i.name+'<small>\u20B1'+i.price+' each</small></div><span class="pill '+(low(i)?'low':'')+'">'+i.qty+' pcs</span></div>'}
+function hdr(st){var s=st.screen;
+ if(s==="home")return '<div class="hd"><div><div class="brandrow"><h2>Home Dashboard</h2><span class="tag">TindaTrack</span></div><p>Hi, Aling Marites \uD83D\uDC4B</p></div><div class="av">AM</div></div>';
+ var back=(s==="detail"||s==="add");
+ return '<div class="hd b">'+(back?'<button class="circ" data-go="inventory">\u2039</button>':'')+'<h2>'+titles[s]+'</h2></div>'}
+var views={
+home:function(){var l=lows();return '<div class="stats"><div class="stat a"><b>'+items.length+'</b><span>Total items</span></div><div class="stat b"><b>'+l.length+'</b><span>Low stock</span></div></div>'+
+ '<div class="card"><h3>Needs restocking</h3>'+(l.length?l.slice(0,3).map(row).join(''):'<div class="empty">All items are well stocked.</div>')+'</div>'+
+ '<button class="btn" data-go="add">+ Add New Item</button><button class="btn alt" data-go="inventory">View Inventory</button>'},
+inventory:function(st){var list=items.filter(function(i){return i.name.toLowerCase().indexOf(st.q.toLowerCase())>-1&&(st.f==="all"||(st.f==="low"?low(i):!low(i)))});
+ return '<input class="qin" placeholder="Search items..." value="'+st.q+'"><div class="chips">'+[["all","All"],["low","Low"],["ok","In stock"]].map(function(c){return '<span class="chip '+(st.f===c[0]?'on':'')+'" data-f="'+c[0]+'">'+c[1]+'</span>'}).join('')+'</div>'+
+ '<div class="card">'+(list.length?list.map(row).join(''):'<div class="empty">No items found.</div>')+'</div><button class="btn" data-go="add">+ Add New Item</button>'},
+detail:function(st){var i=cur(st);return '<div class="card"><h3>'+i.name+'</h3><small style="color:var(--mute)">\u20B1'+i.price+' each</small><div class="big" style="color:'+(low(i)?'#e0574a':'var(--ink)')+'">'+i.qty+'</div><div style="text-align:center"><span class="pill '+(low(i)?'low':'')+'">'+(low(i)?'Low stock':'In stock')+'</span></div></div>'+
+ '<div class="card"><h3 style="text-align:center">Update Stock</h3><div class="step"><button data-adj="-1">\u2212</button><button data-adj="1">+</button></div><button class="btn" data-adj="10">Restock +10</button></div>'+
+ '<button class="btn del'+(st.cd?' conf':'')+'" data-del="1">'+(st.cd?'Tap again to confirm delete':'Delete Item')+'</button>'+(st.cd?'<button class="btn alt" data-nodel="1">Cancel</button>':'')},
+add:function(){return '<div class="card"><label>Item name</label><input class="fn" placeholder="e.g. Sugar (1 kg)"><label>Quantity</label><input class="fq" type="number" placeholder="0"><label>Price (\u20B1)</label><input class="fp" type="number" placeholder="0"><button class="btn save">Save Item</button></div>'},
+alerts:function(){var l=lows();return '<div class="card"><h3>'+l.length+' item(s) running low</h3>'+(l.length?l.map(function(i){return '<div class="row" style="cursor:default"><div><span data-go="detail" data-id="'+i.id+'" style="cursor:pointer">'+i.name+'</span><small>Only '+i.qty+' left</small></div><button class="btn sm" data-re="'+i.id+'">+10</button></div>'}).join(''):'<div class="empty">Nothing to restock.</div>')+'</div>'},
+settings:function(){return '<div class="card"><label>Store name</label><input class="sn" value="'+G.store+'"><label>Alert when quantity is at or below</label><div class="step" style="justify-content:flex-start;margin-bottom:10px"><button data-th="-1">\u2212</button><b style="font-size:22px;width:34px;text-align:center">'+G.limit+'</b><button data-th="1">+</button></div>'+
+ '<div class="row" data-tg="1"><div>Low-stock notifications</div><span class="pill '+(G.notif?'':'low')+'">'+(G.notif?'On':'Off')+'</span></div></div>'}};
+function drawPh(ph){var st=ph.st,s=st.screen,sc=ph.querySelector(".scr"),y=sc.scrollTop;
+ sc.innerHTML=hdr(st)+views[s](st);sc.scrollTop=y;
+ var t=(s==="detail"||s==="add")?"inventory":s;
+ ph.querySelector(".nav").innerHTML=tabs.map(function(x){return '<button class="'+(x[0]===t?'on':'')+'" data-go="'+x[0]+'"><b>'+x[1]+'</b>'+x[2]+'</button>'}).join('');
+ ph.cap.textContent=titles[s]}
+function drawAll(){phones.forEach(drawPh)}
+var starts=[{screen:"home"}];
+var stage=document.getElementById("stage");
+starts.forEach(function(x){var col=document.createElement("div");col.className="col";
+ col.innerHTML='<div class="phone"><div class="st"><span>9:41</span><span>5G \u25AE</span></div><div class="scr"></div><div class="nav"></div><div class="hb"><i></i></div></div><div class="cap"></div>';
+ var ph=col.querySelector(".phone");ph.cap=col.querySelector(".cap");ph.st={screen:x.screen,sel:x.sel||1,q:"",f:"all"};
+ stage.appendChild(col);phones.push(ph)});
+drawAll();
+var dm=false;
+try{var sv=localStorage.getItem("tt-dark");dm=sv===null?window.matchMedia("(prefers-color-scheme: dark)").matches:sv==="1"}catch(x){}
+function setMode(d){dm=d;document.body.classList.toggle("dark",d);document.getElementById("mode").textContent=d?"\u2600\uFE0F Light mode":"\uD83C\uDF19 Dark mode";try{localStorage.setItem("tt-dark",d?"1":"0")}catch(x){}}
+setMode(dm);
+document.getElementById("mode").addEventListener("click",function(){setMode(!dm)});
+document.addEventListener("click",function(e){var ph=e.target.closest(".phone");if(!ph)return;var st=ph.st,t=e.target,
+ g=t.closest("[data-go]"),a=t.closest("[data-adj]"),dl=t.closest("[data-del]"),nd=t.closest("[data-nodel]"),c=t.closest("[data-f]"),r=t.closest("[data-re]"),th=t.closest("[data-th]"),tg=t.closest("[data-tg]");
+ if(nd){st.cd=false;drawPh(ph);return}
+ if(dl){if(!st.cd){st.cd=true;drawPh(ph);return}var d=cur(st);items=items.filter(function(i){return i.id!==d.id});st.cd=false;st.sel=null;st.screen="inventory";drawAll();return}
+ if(a){var i=cur(st);i.qty=Math.max(0,i.qty+ +a.dataset.adj);drawAll();return}
+ if(r){items.find(function(i){return i.id==r.dataset.re}).qty+=10;drawAll();return}
+ if(c){st.f=c.dataset.f;drawPh(ph);return}
+ if(th){G.limit=Math.max(0,G.limit+ +th.dataset.th);drawAll();return}
+ if(tg){G.notif=!G.notif;drawAll();return}
+ if(t.classList.contains("save")){var n=ph.querySelector(".fn").value.trim();if(!n){ph.querySelector(".fn").focus();return}
+  items.push({id:Date.now(),name:n,qty:+ph.querySelector(".fq").value||0,price:+ph.querySelector(".fp").value||0});st.q="";st.f="all";st.screen="inventory";drawAll();return}
+ if(g){st.cd=false;st.screen=g.dataset.go;if(g.dataset.id)st.sel=+g.dataset.id;drawPh(ph)}
+});
+document.addEventListener("input",function(e){var ph=e.target.closest(".phone");if(!ph)return;
+ if(e.target.classList.contains("qin")){ph.st.q=e.target.value;var p=e.target.selectionStart;drawPh(ph);var q=ph.querySelector(".qin");q.focus();q.setSelectionRange(p,p)}
+ if(e.target.classList.contains("sn"))G.store=e.target.value});
+</script>
+</body>
+</html>

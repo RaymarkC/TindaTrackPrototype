@@ -91,7 +91,9 @@ var items=[
  {id:1,name:"Rice (1 kg)",qty:20,price:55},{id:2,name:"Canned Sardines",qty:4,price:25},
  {id:3,name:"Instant Noodles",qty:12,price:14},{id:4,name:"Coffee Sachet",qty:3,price:8},
  {id:5,name:"Softdrinks",qty:8,price:20},{id:6,name:"Eggs",qty:2,price:10}];
-var G={limit:5,notif:true,store:"Aling Marites Store"};
+var G={limit:5,notif:true,store:"Aling Marites Store",user:"Aling Marites"};
+function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;")}
+function ini(){var w=G.user.trim().split(/\s+/).filter(Boolean);return w.length?(w[0][0]+(w[1]?w[1][0]:"")).toUpperCase():"?"}
 var titles={home:"Home Dashboard",inventory:"Inventory",detail:"Item Details",add:"Add Item",alerts:"Low-Stock Alerts",settings:"Settings"};
 var tabs=[["home","\u2302","Home"],["inventory","\u2630","Inventory"],["alerts","\u26A0","Alerts"],["settings","\u2699","Settings"]];
 var phones=[];
@@ -100,7 +102,7 @@ function lows(){return items.filter(low)}
 function cur(st){return items.find(function(i){return i.id===st.sel})||items[0]}
 function row(i){return '<div class="row" data-go="detail" data-id="'+i.id+'"><div>'+i.name+'<small>\u20B1'+i.price+' each</small></div><span class="pill '+(low(i)?'low':'')+'">'+i.qty+' pcs</span></div>'}
 function hdr(st){var s=st.screen;
- if(s==="home")return '<div class="hd"><div><div class="brandrow"><h2>Home Dashboard</h2><span class="tag">TindaTrack</span></div><p>Hi, Aling Marites \uD83D\uDC4B</p></div><div class="av">AM</div></div>';
+ if(s==="home")return '<div class="hd"><div><div class="brandrow"><h2>Home Dashboard</h2><span class="tag">TindaTrack</span></div><p>Hi, '+(G.user.trim()?esc(G.user.trim()):'there')+'! \uD83D\uDC4B</p></div><div class="av">'+ini()+'</div></div>';
  var back=(s==="detail"||s==="add");
  return '<div class="hd b">'+(back?'<button class="circ" data-go="inventory">\u2039</button>':'')+'<h2>'+titles[s]+'</h2></div>'}
 var views={
@@ -115,7 +117,7 @@ detail:function(st){var i=cur(st);return '<div class="card"><h3>'+i.name+'</h3><
  '<button class="btn del'+(st.cd?' conf':'')+'" data-del="1">'+(st.cd?'Tap again to confirm delete':'Delete Item')+'</button>'+(st.cd?'<button class="btn alt" data-nodel="1">Cancel</button>':'')},
 add:function(){return '<div class="card"><label>Item name</label><input class="fn" placeholder="e.g. Sugar (1 kg)"><label>Quantity</label><input class="fq" type="number" placeholder="0"><label>Price (\u20B1)</label><input class="fp" type="number" placeholder="0"><button class="btn save">Save Item</button></div>'},
 alerts:function(){var l=lows();return '<div class="card"><h3>'+l.length+' item(s) running low</h3>'+(l.length?l.map(function(i){return '<div class="row" style="cursor:default"><div><span data-go="detail" data-id="'+i.id+'" style="cursor:pointer">'+i.name+'</span><small>Only '+i.qty+' left</small></div><button class="btn sm" data-re="'+i.id+'">+10</button></div>'}).join(''):'<div class="empty">Nothing to restock.</div>')+'</div>'},
-settings:function(){return '<div class="card"><label>Store name</label><input class="sn" value="'+G.store+'"><label>Alert when quantity is at or below</label><div class="step" style="justify-content:flex-start;margin-bottom:10px"><button data-th="-1">\u2212</button><b style="font-size:22px;width:34px;text-align:center">'+G.limit+'</b><button data-th="1">+</button></div>'+
+settings:function(){return '<div class="card"><label>Your name</label><input class="un" placeholder="Type your name" value="'+esc(G.user)+'"><label>Store name</label><input class="sn" value="'+esc(G.store)+'"><label>Alert when quantity is at or below</label><div class="step" style="justify-content:flex-start;margin-bottom:10px"><button data-th="-1">\u2212</button><b style="font-size:22px;width:34px;text-align:center">'+G.limit+'</b><button data-th="1">+</button></div>'+
  '<div class="row" data-tg="1"><div>Low-stock notifications</div><span class="pill '+(G.notif?'':'low')+'">'+(G.notif?'On':'Off')+'</span></div></div>'}};
 function drawPh(ph){var st=ph.st,s=st.screen,sc=ph.querySelector(".scr"),y=sc.scrollTop;
  sc.innerHTML=hdr(st)+views[s](st);sc.scrollTop=y;
@@ -150,7 +152,9 @@ document.addEventListener("click",function(e){var ph=e.target.closest(".phone");
 });
 document.addEventListener("input",function(e){var ph=e.target.closest(".phone");if(!ph)return;
  if(e.target.classList.contains("qin")){ph.st.q=e.target.value;var p=e.target.selectionStart;drawPh(ph);var q=ph.querySelector(".qin");q.focus();q.setSelectionRange(p,p)}
- if(e.target.classList.contains("sn"))G.store=e.target.value});
+ if(e.target.classList.contains("sn"))G.store=e.target.value;
+ if(e.target.classList.contains("un"))G.user=e.target.value});
 </script>
 </body>
 </html>
+ 
